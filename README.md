@@ -1,11 +1,6 @@
 # PWP SPRING 2024
-# PROJECT NAME
+# MessageBoard PWP
 # Group information
-* Student 1. Name and email
-* Student 2. Name and email
-* Student 3. Name and email
-* Student 4. Name and email
-
-__Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
-
-
+* Student 1. Umer Abdullah Yaseen, umer.yaseen@student.oulu.fi
+* Student 2. Kinza Ghaffar, Kinza Ghaffar    kinza.ghaffar@student.oulu.fi 
+* Student 3. Khizra Ghaffar, khizra.ghaffar@student.oulu.fi
