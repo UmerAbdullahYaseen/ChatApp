@@ -50,6 +50,29 @@ const login = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+const allusers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+// delete user with user id
+exports.deleteUser = async (req, res) => {
+    try{
+        const {userId} = req.params;
+        //find user through id and delete it
+        await User.findByIdAndDelete(userId);
+        res.status(200).json({message:"User has been deleted successfully"})
+
+    } catch(error){
+        console.error('Error while deleting user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 /* const forgotPassword = async (req, res) => {
     try {
@@ -95,4 +118,4 @@ const resetPassword = async (req, res) => {
     }
 }; */
 
-module.exports = { register, login };
+module.exports = { register, login, allusers};
