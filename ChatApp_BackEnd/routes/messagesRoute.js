@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { sendMessage, getMessages, deleteMessages } = require('../controller/messageController');
+const { sendMessage, getMessages, deleteMessages, getMessage } = require('../controller/messageController');
 const { authenticateUser } = require('../middleware/authMiddleware');
 
 // Routes
@@ -11,6 +11,8 @@ router.get('/channels/:channelId/messages' , authenticateUser, getMessages);
 router.post('/channels/:channelId/messages', authenticateUser, sendMessage);
 
 // Delete a specific message by messageId
-router.delete('/messages/:messageId', authenticateUser, deleteMessages);
+router.delete('/channels/:channelId/messages/:messageId', authenticateUser, deleteMessages);
+
+router.get('/channels/:channelId/messages/:messageId', authenticateUser, getMessage);
 
 module.exports = router;
