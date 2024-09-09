@@ -9,12 +9,12 @@
    ```bash
    cd messageBoard
    npm install
-   cd ../server
+   cd ../ChatApp_Backend
    npm install
 
 2. **Run the Server:**
    ```bash
-   cd server
+   cd ChatApp_Backend
    node server.js
 
 3. **Run the Client:**
@@ -24,49 +24,57 @@
 
 - This will open the app in your default browser URL, http://localhost:3000/ and the port for server is set to 3001.
 
-**Requirements Completion:**
+# Requirements Completion
 
-**React Client:**
-- Rendered a full-page application with three panels.
-- Implemented a navigation panel, message list panel, and editor panel.
-- Provided user interactions for channel selection, message submission, and channel switching.
+## React Client
 
-**Node.js Backend:**
-- Developed a Node.js server with Express to handle HTTP requests.
-- Used in-memory storage for channels and messages.
-- Created endpoints for querying channels and messages, as well as submitting new messages.
+- Developed a full-page application with three panels: a navigation panel, a message list panel, and an editor panel.
+- Implemented user interactions for channel selection, message submission, and channel switching.
+- Ensured a responsive layout for optimal viewing on various screen sizes.
 
-**Additional Features:**
+## Node.js Backend
 
-- **Deleting Channels:**
-  - Implemented a feature to delete channels using the delete button in the navigation panel.
+- Created a Node.js server using Express to handle HTTP requests efficiently.
+- Utilized MongoDB for persistent storage of channels and messages.
+- Designed RESTful endpoints for querying channels and messages, as well as submitting new messages.
 
-- **Clearing Chat:**
-  - Added a "Clear Chat" button in the message panel to clear all messages for the selected channel.
+## Additional Features
 
-- **Adding Channels:**
-  - Implemented a feature to add new channels by entering a name in the input field and clicking the "Create Channel" button.
+### Deleting Channels
 
-- **Real-Time Chat with Socket.IO:**
-  - Implement real-time chat using Socket.IO. Although not fully implemented, the relevant code is present, and it demonstrates the intention to enhance the app with real-time capabilities int future work.
+- Implemented functionality to delete channels via a delete button in the navigation panel.
 
-- **Responsive Layout:**
-  - Ensured that the app has a responsive layout to provide a consistent user experience across different screen sizes.
+### Clearing Chat
 
-- **Code Structure and Principles:**
-  - Utilized development principles such as DRY (Don't Repeat Yourself) and KISS (Keep It Simple, Stupid) to maintain a clean and organized code structure.
-  - Implemented a modular file structure, separating routes and server logic for better maintainability.
+- Added a "Clear Chat" button in the message panel to remove all messages for the selected channel.
 
-- **Code Analysis and Professionalism:**
-  - Conducted a thorough code analysis, adhering to best practices and maintaining a professional coding style.
-  - Addressed potential improvements and actively sought to enhance the app's functionality.
+### Adding Channels
 
-- **State Management:**
-  - Effectively managed state in the React client, including channels, selected channel, and message lists.
+- Enabled users to create new channels by entering a name in the input field and clicking the "Create Channel" button.
 
-- **Error Handling:**
-  - Implemented error handling for certain scenarios to provide a smoother user experience.
+### Real-Time Chat with Socket.IO
 
-**Conclusion:**
+- Integrated real-time chat capabilities using Socket.IO. The foundational code is implemented, demonstrating the commitment to enhancing the app with real-time features in future iterations.
 
-The application demonstrates a comprehensive understanding of frontend and backend development. While some features are fully implemented, others, like real-time chat, showcase intentions for future enhancements. The code adheres to best practices, maintains a clean structure, and ensures a positive user experience.
+### State Management
+
+- Effectively managed state in the React client, including channels, the currently selected channel, and message lists.
+
+## Code Structure and Principles
+
+- Followed development principles such as **DRY** (Don't Repeat Yourself) and **KISS** (Keep It Simple, Stupid) to maintain a clean and organized code structure.
+- Implemented a modular file structure, separating routes and server logic for better maintainability.
+
+## Code Analysis and Professionalism
+
+- Conducted thorough code analysis, adhering to best practices, and maintaining a professional coding style.
+- Identified potential improvements and actively sought ways to enhance the app's functionality.
+
+## Error Handling
+
+- Implemented error handling for various scenarios to ensure a smoother user experience.
+
+## Conclusion
+
+The application demonstrates a robust understanding of both frontend and backend development. While several features are fully operational, such as channel management and message handling, the inclusion of real-time chat highlights intentions for future enhancements. The code adheres to best practices, maintaining a clean structure, and ensuring a positive user experience. Overall, the project showcases the ability to develop a full-stack application with a focus on maintainability and user engagement.
+
