@@ -90,26 +90,106 @@ Brief description of your project.
 
 # Controllers
 
-## Auth Controller
-- register: Handles user registration.
-- login: Handles user authentication and JWT token generation.
+# Controllers
 
-## Channel Controller
-- createChannel: Handles the creation of new channels.
-- getChannels: Retrieves a list of all channels.
+## Authentication Controller (authController.js)
 
-## Message Controller
-- sendMessage: Handles the sending of messages to a channel.
-- getMessages: Retrieves messages for a specific channel.
+### Methods
+
+- **register**:  
+  Handles user registration by creating a new user account. It validates input data, checks for existing users, hashes the password, and saves the user to the database.
+
+- **login**:  
+  Authenticates a user by verifying their credentials (email and password). If valid, it generates a token for session management.
+
+- **allusers**:  
+  Retrieves and returns a list of all registered users in the system. It may include filtering or pagination.
+
+- **forgotPassword**:  
+  Manages password recovery by sending a password reset link to the user's registered email address.
+
+- **resetPassword**:  
+  Updates a user's password based on a provided reset token and new password.
+
+- **deleteUser**:  
+  Deletes a specified user from the database, ensuring proper authentication before performing the action.
+
+- **getUser**:  
+  Retrieves detailed information about a specific user by their user ID, ensuring the requester is authenticated.
+
+## Channel Controller (channelController.js)
+
+### Methods
+
+- **createChannel**:  
+  Creates a new channel in the application. It validates the input data and associates the channel with the authenticated user.
+
+- **getChannels**:  
+  Retrieves and returns a list of all channels available in the application for the authenticated user.
+
+- **getChannelDetails**:  
+  Fetches detailed information about a specific channel using its channel ID.
+
+- **updateChannel**:  
+  Updates the details of a specific channel, such as its name or description, based on the channel ID.
+
+- **deleteChannel**:  
+  Deletes a specific channel by its ID, ensuring that the user is authenticated and authorized to perform this action.
+
+## Message Controller (messageController.js)
+
+### Methods
+
+- **sendMessage**:  
+  Sends a message to a specific channel, validating input data and ensuring the user is authenticated.
+
+- **getMessages**:  
+  Retrieves and returns all messages within a specific channel, filtering by the channel ID.
+
+- **deleteMessages**:  
+  Deletes a specific message from a channel based on its message ID, ensuring the requester is authenticated.
+
+- **clearChannelMessages**:  
+  Deletes all messages within a specific channel, requiring user authentication.
+
+- **getMessage**:  
+  Retrieves a specific message from a channel using its message ID.
+
 
 # Routes
 
-- `/api/auth/register` -> `authController.register`
-- `/api/auth/login` -> `authController.login`
-- `/api/channels/create` -> `channelController.createChannel`
-- `/api/channels` -> `channelController.getChannels`
-- `/api/messages/send` -> `messageController.sendMessage`
-- `/api/messages/:channelId` -> `messageController.getMessages`
+# API Routes
+
+## Authentication Routes
+
+| Method | Endpoint                      | Description                          | Authentication Required |
+|--------|-------------------------------|--------------------------------------|-------------------------|
+| POST   | `/api/auth/users`             | `authController.register`            | No                      |
+| GET    | `/api/auth/users`             | `authController.allusers`            | No                      |
+| POST   | `/api/auth/login`             | `authController.login`               | No                      |
+| GET    | `/api/auth/users/:userId`     | `authController.getUser`             | Yes                     |
+| DELETE | `/api/auth/users/:userId`     | `authController.deleteUser`          | Yes                     |
+
+## Channel Routes
+
+| Method | Endpoint                       | Description                           | Authentication Required |
+|--------|--------------------------------|---------------------------------------|-------------------------|
+| GET    | `/api/channels`                | `channelController.getChannels`       | Yes                     |
+| POST   | `/api/channels`                | `channelController.createChannel`     | Yes                     |
+| GET    | `/api/channels/:channelId`     | `channelController.getChannelDetails` | Yes                     |
+| PUT    | `/api/channels/:channelId`     | `channelController.updateChannel`     | Yes                     |
+| DELETE | `/api/channels/:channelId`     | `channelController.deleteChannel`     | Yes                     |
+
+## Message Routes
+
+| Method | Endpoint                                      | Description                            | Authentication Required |
+|--------|-----------------------------------------------|----------------------------------------|-------------------------|
+| GET    | `/api/channels/:channelId/messages`         | `messageController.getMessages`        | Yes                     |
+| POST   | `/api/channels/:channelId/messages`         | `messageController.sendMessage`        | Yes                     |
+| DELETE | `/api/channels/:channelId/messages/:messageId` | `messageController.deleteMessages`     | Yes                     |
+| DELETE | `/api/channels/:channelId/messages`         | `messageController.clearChannelMessages` | Yes                     |
+| GET    | `/api/channels/:channelId/messages/:messageId` | `messageController.getMessage`        | Yes                     |
+
 
 ## Contributing
 - If you would like to contribute to the project, feel free to fork the repository and submit a pull request.
