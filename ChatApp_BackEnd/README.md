@@ -190,6 +190,19 @@ Brief description of your project.
 | DELETE | `/api/channels/:channelId/messages`         | `messageController.clearChannelMessages` | Yes                     |
 | GET    | `/api/channels/:channelId/messages/:messageId` | `messageController.getMessage`        | Yes                     |
 
+Run Tests:
+Execute the test suite using Jest:
+
+```sh
+npx jest
+```
+Test Scripts:
+Add test scripts to package.json:
+```sh
+"scripts": {
+  "test": "jest"
+}
+```
 
 ## Contributing
 - If you would like to contribute to the project, feel free to fork the repository and submit a pull request.
