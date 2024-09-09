@@ -13,8 +13,8 @@ exports.createChannel = async (req, res) => {
         res.status(201).json({
             channel: newChannel,
             links: {
-                self: `/api/channels/${newChannel._id}`,
-                allChannels: `/api/channels`
+                self: `/api/channels/channels/${newChannel._id}`,
+                allChannels: `/api/channels/channels`
             }
         });
     } catch (error) {
@@ -29,8 +29,8 @@ exports.getChannels = async (req, res) => {
         res.json({
             channels,
             links: {
-                self: `/api/channels`,
-                createChannel: `/api/channels`
+                self: `/api/channels/channels`,
+                createChannel: `/api/channels/channels`
             }
         });
     } catch (error) {
@@ -49,9 +49,9 @@ exports.getChannelDetails = async (req, res) => {
         res.json({
             channel,
             links: {
-                self: `/api/channels/${channel._id}`,
-                update: `/api/channels/${channel._id}`,
-                delete: `/api/channels/${channel._id}`
+                self: `/api/channels/channels/${channel._id}`,
+                update: `/api/channels/channels/${channel._id}`,
+                delete: `/api/channels/channels/${channel._id}`
             }
         });
     } catch (error) {
@@ -70,7 +70,7 @@ exports.deleteChannel = async (req, res) => {
         res.json({
             message: 'Channel deleted successfully',
             links: {
-                allChannels: `/api/channels`
+                allChannels: `/api/channels/channels`
             }
         });
     } catch (error) {
@@ -93,8 +93,8 @@ exports.updateChannel = async (req, res) => {
         res.json({
             message: 'Channel updated successfully',
             links: {
-                self: `/api/channels/${updatedChannel._id}`,
-                allChannels: `/api/channels`
+                self: `/api/channels/channels/${updatedChannel._id}`,
+                allChannels: `/api/channels/channels`
             }
         });
     } catch (error) {

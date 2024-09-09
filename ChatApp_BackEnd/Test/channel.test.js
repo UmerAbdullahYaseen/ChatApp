@@ -29,8 +29,8 @@ describe('Channel API', () => {
 
     channelId = res.body.channel._id; // Save channelId for later use
 
-    expect(res.body.links.self).toBe(`/api/channels/${channelId}`);
-    expect(res.body.links.allChannels).toBe(`/api/channels`);
+    expect(res.body.links.self).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.allChannels).toBe(`/api/channels/channels`);
   });
 
   // Test getting all channels
@@ -45,8 +45,8 @@ describe('Channel API', () => {
     expect(res.body.links).toHaveProperty('self');
     expect(res.body.links).toHaveProperty('createChannel');
 
-    expect(res.body.links.self).toBe('/api/channels');
-    expect(res.body.links.createChannel).toBe('/api/channels');
+    expect(res.body.links.self).toBe('/api/channels/channels');
+    expect(res.body.links.createChannel).toBe('/api/channels/channels');
   });
 
   test('should get the details of a specific channel', async () => {
@@ -62,9 +62,9 @@ describe('Channel API', () => {
     expect(res.body.links).toHaveProperty('update');
     expect(res.body.links).toHaveProperty('delete');
 
-    expect(res.body.links.self).toBe(`/api/channels/${channelId}`);
-    expect(res.body.links.update).toBe(`/api/channels/${channelId}`);
-    expect(res.body.links.delete).toBe(`/api/channels/${channelId}`);
+    expect(res.body.links.self).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.update).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.delete).toBe(`/api/channels/channels/${channelId}`);
   });
 
   // Test updating channel details
@@ -84,8 +84,8 @@ describe('Channel API', () => {
     expect(res.body).toHaveProperty('links');
     expect(res.body.links).toHaveProperty('self');
     expect(res.body.links).toHaveProperty('allChannels');
-    expect(res.body.links.self).toBe(`/api/channels/${channelId}`);
-    expect(res.body.links.allChannels).toBe(`/api/channels`);
+    expect(res.body.links.self).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.allChannels).toBe(`/api/channels/channels`);
 
     // Verify the channel was updated
     const channelRes = await request(app)
@@ -110,7 +110,7 @@ describe('Channel API', () => {
     expect(deleteRes.body).toHaveProperty('message', 'Channel deleted successfully');
     expect(deleteRes.body).toHaveProperty('links');
     expect(deleteRes.body.links).toHaveProperty('allChannels');
-    expect(deleteRes.body.links.allChannels).toBe(`/api/channels`);
+    expect(deleteRes.body.links.allChannels).toBe(`/api/channels/channels`);
 
     // Verify the channel was deleted
     const channelRes = await request(app)

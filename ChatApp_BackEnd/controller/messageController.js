@@ -1,4 +1,5 @@
 const Message = require('../model/messagesInChannel');
+const Channel = require('../model/channelListModel');
 
 exports.sendMessage = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ exports.sendMessage = async (req, res) => {
         res.status(201).json({
             message: newMessage,
             links: {
-                self: `/api/messages/${newMessage._id}`,
+                self: `/api/messages/channels/${newMessage._id}/messages`,
                 channelMessages: `/api/channels/${channelId}/messages`
             }
         });
@@ -18,16 +19,17 @@ exports.sendMessage = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+  
 
 exports.getMessages = async (req, res) => {
     try {
-        const { channelId } = req.params;
+        const { channelId, messageId } = req.params;
         const messages = await Message.find({ channel: channelId });
         res.json({
             messages,
             links: {
-                self: `/api/channels/${channelId}/messages`,
-                sendMessage: `/api/channels/${channelId}/messages`
+                self: `/api/messages/channels/${channelId}/messages`,
+                sendMessage: `/api/messages/channels/${channelId}/messages`,
             }
         });
     } catch (error) {
@@ -43,11 +45,37 @@ exports.deleteMessages = async (req, res) => {
         res.status(200).json({
             message: "Message has been deleted successfully",
             links: {
-                allMessages: `/api/channels/${req.params.channelId}/messages`
+                allMessages: `/api/channels/channels/${req.params.channelId}/messages`
             }
         });
     } catch (error) {
         console.error('Error while deleting messages:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.clearChannelMessages = async (req, res) => {
+    try {
+        const { channelId } = req.params;
+
+        // Check if the channel exists
+        const channelExists = await Channel.findById(channelId);
+        if (!channelExists) {
+            return res.status(404).json({ error: 'Channel not found' });
+        }
+
+        // Delete all messages in the channel
+        await Message.deleteMany({ channel: channelId });
+
+        res.status(200).json({
+            message: 'All messages have been cleared from the channel',
+            links: {
+                self: `/api/messages/channels/${channelId}/clear`,
+                channelMessages: `/api/channels/${channelId}/messages`
+            }
+        });
+    } catch (error) {
+        console.error('Error while clearing channel messages:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

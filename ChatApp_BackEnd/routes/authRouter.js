@@ -7,7 +7,7 @@ const { authenticateUser } = require('../middleware/authMiddleware');
 router.post('/users', register); // Create a user
 router.get('/users', allusers); // List all users
 router.post('/login', login); // User login
-router.get('/allusers/:userId', authenticateUser, getUser); //Get user details
+router.get('/users/:userId', authenticateUser, getUser); //Get user details
 router.delete('/users/:userId', authenticateUser, deleteUser); // Delete the user
 
 module.exports = router;

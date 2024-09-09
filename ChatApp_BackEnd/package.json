@@ -4,7 +4,7 @@
   "description": "----------------------------------------------\r Real Chat Application\r ----------------------------------------------\r Dependencies:\r -React.js\r -Express.js\r -Node.js\r -MongoDB Database",
   "main": "index.js",
   "scripts": {
-     "test": "jest"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.1",
+    "nodemailer": "^6.9.15",
     "sinon": "^18.0.0",
     "validator": "^13.11.0"
   },

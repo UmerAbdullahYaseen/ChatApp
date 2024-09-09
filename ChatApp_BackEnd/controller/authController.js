@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../model/userModel');
+const sendWelcomeEmail = require('../Services/emailService');
 
 const register = async (req, res) => {
     try {
@@ -66,13 +67,22 @@ const login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
         const token = jwt.sign({ email: user.email, userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        sendWelcomeEmail(user.email);
+
         res.status(200).json({
             token,
+            user: {
+                id: user._id,
+                email: user.email,
+                // add other user details you might need
+            },
             links: {
                 self: `/api/auth/login`,
                 user: `/api/auth/users/${user._id}`
             }
         });
+        
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
     }

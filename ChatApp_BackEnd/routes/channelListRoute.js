@@ -15,4 +15,4 @@ router.put('/channels/:channelId', authenticateUser, updateChannel);
 // Delete a channel by channelId
 router.delete('/channels/:channelId', authenticateUser, deleteChannel);
 
-module.exports = router;
+module.exports = router;    
