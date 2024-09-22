@@ -23,7 +23,7 @@ exports.sendMessage = async (req, res) => {
 
 exports.getMessages = async (req, res) => {
     try {
-        const { channelId, messageId } = req.params;
+        const { channelId } = req.params;
         const messages = await Message.find({ channel: channelId });
         res.json({
             messages,
@@ -108,3 +108,49 @@ exports.getMessage = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+exports.updateMessage = async (req, res) => {
+    try {
+        const { channelId, messageId } = req.params;
+        const { content } = req.body;
+        const userId = req.user._id; // The authenticated user's ID
+
+        // Check if the channel exists
+        const channelExists = await Channel.findById(channelId);
+        if (!channelExists) {
+            return res.status(404).json({ error: 'Channel not found' });
+        }
+
+        // Find the message and ensure it belongs to the user
+        const message = await Message.findOne({ _id: messageId, channel: channelId });
+
+        if (!message) {
+            return res.status(404).json({ error: 'Message not found' });
+        }
+
+        // Authorization check: only the message owner can update the message
+        if (message.user.toString() !== userId.toString()) {
+            return res.status(403).json({ error: 'You are not authorized to edit this message' });
+        }
+
+        // Use findByIdAndUpdate to update the message content
+        const updatedMessage = await Message.findByIdAndUpdate(
+            messageId,
+            { content },
+            { new: true } // This option returns the updated document
+        );
+
+        res.status(200).json({
+            message: updatedMessage,
+            links: {
+                self: `/api/messages/channels/${channelId}/messages/${messageId}`,
+                channelMessages: `/api/channels/${channelId}/messages`,
+            }
+        });
+    } catch (error) {
+        console.error('Error updating message:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+

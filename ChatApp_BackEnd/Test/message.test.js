@@ -65,14 +65,13 @@ describe('Message API', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body).toHaveProperty('messages');
         expect(Array.isArray(res.body.messages)).toBe(true);
-        expect(res.body.messages.length).toBeGreaterThan(0); // Check if at least one message exists
+        expect(res.body.messages.length).toBeGreaterThan(0); 
         expect(res.body).toHaveProperty('links');
         expect(res.body.links).toHaveProperty('self');
         expect(res.body.links).toHaveProperty('sendMessage');
 
         expect(res.body.links.self).toBe(`/api/messages/channels/${channelId}/messages`);
         expect(res.body.links.sendMessage).toBe(`/api/messages/channels/${channelId}/messages`);
-        //expect(res.body.links.getMessage).toBe(`/api/messages/channels/${channelId}/messages/${messageId}`);
     });
 
     // Test error handling
@@ -87,6 +86,25 @@ describe('Message API', () => {
         expect(res.body).toHaveProperty('error', 'Internal Server Error');
     });
 
+    test('should update a message', async () => {
+        const newMessageContent = 'Updated message content';
+
+        const res = await request(app)
+            .put(`/api/messages/channels/${channelId}/messages/${messageId}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ content: newMessageContent });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('message');
+        expect(res.body.message).toHaveProperty('_id', messageId);
+        expect(res.body.message).toHaveProperty('content', newMessageContent);
+        expect(res.body).toHaveProperty('links');
+        expect(res.body.links).toHaveProperty('self');
+        expect(res.body.links).toHaveProperty('channelMessages');
+        
+        expect(res.body.links.self).toBe(`/api/messages/channels/${channelId}/messages/${messageId}`);
+        expect(res.body.links.channelMessages).toBe(`/api/channels/${channelId}/messages`);
+    });
 
     test('should delete a message', async () => {
         // Perform the delete request
@@ -99,7 +117,6 @@ describe('Message API', () => {
         expect(deleteRes.body).toHaveProperty('message', 'Message has been deleted successfully');
         expect(deleteRes.body.links).toHaveProperty('allMessages', `/api/channels/channels/${channelId}/messages`);
     });
-
 
     afterAll(async () => {
         if (messageId) {
@@ -114,3 +131,4 @@ describe('Message API', () => {
         }
     });
 });
+

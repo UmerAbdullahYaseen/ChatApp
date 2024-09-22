@@ -1,0 +1,48 @@
+// server.test.js
+
+const request = require('supertest');
+const mongoose = require('mongoose');
+const app = require('../server'); // Adjust the path if needed
+
+describe('Server Tests', () => {
+    beforeAll(async () => {
+        // Mock the MongoDB connection
+        jest.spyOn(console, 'error').mockImplementation(() => {}); // Suppress error logs
+    });
+
+    afterAll(async () => {
+        // Disconnect from the database after tests
+        await mongoose.connection.close();
+    });
+
+    test('MongoDB connection error is logged', async () => {
+        // Simulate a connection error
+        const originalConnect = mongoose.connect;
+        mongoose.connect = jest.fn().mockImplementation(() => Promise.reject(new Error('Connection error')));
+        
+        await require('./server'); // Requiring the server again to invoke the connection
+
+        expect(console.error).toHaveBeenCalledWith('MongoDB connection error:', expect.any(Error));
+
+        // Restore original connect method
+        mongoose.connect = originalConnect;
+    });
+
+    test('Server starts on the correct port', async () => {
+        process.env.NODE_ENV = 'test'; // Simulate test environment
+        const PORT = process.env.PORT || 3001;
+
+        const server = app.listen(PORT);
+        const response = await request(app).get('/api/auth'); // Sample endpoint
+
+        expect(response.status).not.toBe(404); // Ensure the server is running and not throwing 404
+
+        server.close(); // Close the server
+    });
+
+    test('Handles fallback route correctly', async () => {
+        const response = await request(app).get('/non-existing-route');
+        expect(response.status).toBe(200);
+        expect(response.text).toContain('<!DOCTYPE html>'); // Checking for the presence of HTML content
+    });
+});

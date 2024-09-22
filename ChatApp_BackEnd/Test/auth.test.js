@@ -9,7 +9,7 @@ describe('Authentication API', () => {
   test('should register a new user', async () => {
     const res = await request(app)
       .post('/api/auth/users')
-      .send({ username: 'testuser3111', email: 'testuser3111@example.com', password: 'password12345' });
+      .send({ username: 'testuser31111', email: 'testuser31111@example.com', password: 'password123456' });
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('user');
@@ -25,7 +25,7 @@ describe('Authentication API', () => {
   test('should login a user and return a token with hypermedia links', async () => {
     const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'testuser3111@example.com', password: 'password12345' });
+      .send({ email: 'testuser31111@example.com', password: 'password123456' });
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty('token');
@@ -40,7 +40,7 @@ describe('Authentication API', () => {
   test('should return 400 if user already exists', async () => {
     const res = await request(app)
       .post('/api/auth/users')
-      .send({ username: 'testuser', email: 'testuser3111@example.com', password: 'password12345' });
+      .send({ username: 'testuser', email: 'testuser31111@example.com', password: 'password123456' });
 
     expect(res.statusCode).toBe(400);
   });
