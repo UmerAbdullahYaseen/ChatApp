@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Database connection { useNewUrlParser: true, useUnifiedTopology: true }
-mongoose.connect("mongodb+srv://comsatsciit13:javvpqT0TkR7ZgfN@cluster0.ogkzfxg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect("process.evn.MONGODB_URL")
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
     
