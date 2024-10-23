@@ -29,7 +29,7 @@ describe('Channel API', () => {
 
     channelId = res.body.channel._id; // Save channelId for later use
 
-    expect(res.body.links.self).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.self).toBe(`/api/channels/channels/{channelId}`);
     expect(res.body.links.allChannels).toBe(`/api/channels/channels`);
   });
 
@@ -62,9 +62,9 @@ describe('Channel API', () => {
     expect(res.body.links).toHaveProperty('update');
     expect(res.body.links).toHaveProperty('delete');
 
-    expect(res.body.links.self).toBe(`/api/channels/channels/${channelId}`);
-    expect(res.body.links.update).toBe(`/api/channels/channels/${channelId}`);
-    expect(res.body.links.delete).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.self).toBe(`/api/channels/channels/{channelId}`);
+    expect(res.body.links.update).toBe(`/api/channels/channels/{channelId}`);
+    expect(res.body.links.delete).toBe(`/api/channels/channels/{channelId}`);
   });
 
   // Test updating channel details
@@ -84,7 +84,7 @@ describe('Channel API', () => {
     expect(res.body).toHaveProperty('links');
     expect(res.body.links).toHaveProperty('self');
     expect(res.body.links).toHaveProperty('allChannels');
-    expect(res.body.links.self).toBe(`/api/channels/channels/${channelId}`);
+    expect(res.body.links.self).toBe(`/api/channels/channels/{channelId}`);
     expect(res.body.links.allChannels).toBe(`/api/channels/channels`);
 
     // Verify the channel was updated

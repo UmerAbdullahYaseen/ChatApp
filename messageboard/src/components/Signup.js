@@ -1,40 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
 
-const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+const Signup = ({ handleRegister, registerSchema }) => {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const ajv = new Ajv({ allErrors: true });
+  addFormats(ajv);
+  const validate = ajv.compile(registerSchema);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    const userData = { email, username, password };
+    const isValid = validate(userData);
 
+    if (!isValid) {
+      setError(ajv.errorsText(validate.errors));
+      return;
+    }
     try {
-      const response = await fetch('http://localhost:3001/api/auth/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, username, password }),
-      });
-
-      if (response.ok) {
-        navigate('/login');
-      } else {
-        setError('Failed to sign up. Please try again.');
-      }
+      await handleRegister(userData);
+      navigate("/login");
     } catch (error) {
-      console.error('Error signing up:', error);
-      setError('Something went wrong. Please try again.');
+      console.error("Signup failed:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
     <div>
       <h2>Sign Up</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -59,7 +61,10 @@ const Signup = () => {
         />
         <button type="submit">Sign Up</button>
       </form>
-      <p>Already have an account? <button onClick={() => navigate('/login')}>Login</button></p>
+      <p>
+        Already have an account?{" "}
+        <button onClick={() => navigate("/login")}>Login</button>
+      </p>
     </div>
   );
 };

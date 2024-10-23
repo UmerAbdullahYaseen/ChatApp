@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import useChat from './CustomHooks/useChat';
-import ChannelsList from './components/ChannelsList';
-import MessageList from './components/MessageList';
-import Editor from './components/Editor';
-import Login from './components/Login';
-import Signup from './components/Signup';
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import "./App.css";
+import useChat from "./CustomHooks/useChat";
+import ChannelsList from "./components/ChannelsList";
+import MessageList from "./components/MessageList";
+import Editor from "./components/Editor";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 function MainPage({ handleLogout, ...chatProps }) {
   return (
@@ -29,13 +34,19 @@ function App() {
     messageList,
     newChannelName,
     showMessagePanel,
+    archiveMessageList,
+    registerSchema,
+    loginSchema,
+    createChannelSchema,
     handleInputChange,
     handleClearChat,
     handleFormSubmit,
     handleChannelSelect,
-    handleNewChannelNameChange,
     handleCreateChannel,
     handleDeleteChannel,
+    loadArchivedMessages,
+    handleLogin,
+    handleRegister,
   } = useChat();
 
   const handleLogout = () => {
@@ -49,12 +60,25 @@ function App() {
           <Route
             path="/login"
             element={
-              loggedInUser ? <Navigate to="/main" /> : <Login setLoggedInUser={setLoggedInUser} />
+              loggedInUser ? (
+                <Navigate to="/main" />
+              ) : (
+                <Login
+                  setLoggedInUser={setLoggedInUser}
+                  handleLogin={handleLogin}
+                  loginSchema={loginSchema}
+                />
+              )
             }
           />
           <Route
             path="/signup"
-            element={<Signup />}
+            element={
+              <Signup
+                handleRegister={handleRegister}
+                registerSchema={registerSchema}
+              />
+            }
           />
           <Route
             path="/main"
@@ -66,15 +90,17 @@ function App() {
                   channels={channels}
                   newMessage={newMessage}
                   messageList={messageList}
+                  archiveMessageList={archiveMessageList}
                   newChannelName={newChannelName}
                   showMessagePanel={showMessagePanel}
                   handleInputChange={handleInputChange}
                   handleClearChat={handleClearChat}
                   handleFormSubmit={handleFormSubmit}
                   handleChannelSelect={handleChannelSelect}
-                  handleNewChannelNameChange={handleNewChannelNameChange}
                   handleCreateChannel={handleCreateChannel}
                   handleDeleteChannel={handleDeleteChannel}
+                  loadArchivedMessages={loadArchivedMessages}
+                  createChannelSchema={createChannelSchema}
                 />
               ) : (
                 <Navigate to="/login" />

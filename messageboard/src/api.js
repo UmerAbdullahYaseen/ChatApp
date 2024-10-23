@@ -1,116 +1,110 @@
-export const getChannelsFromServer = async () => {
-    const token = localStorage.getItem('token');
-    const response = await fetch('http://localhost:3001/api/channels/channels', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+let apiRoot = "http://localhost:3001/api/init";
+let apiLinks = {};
+let apiSchemas = {};
 
-    if (!response.ok) {
-        throw new Error('Unauthorized: no token provided');
-    }
-
-    const channels = await response.json();
-    return channels.channels;
+export const initializeApi = async () => {
+  try {
+    const response = await fetch(apiRoot);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    updateApiLinks(data.links);
+    updateSchemas(data.schemas);
+    return data;
+  } catch (error) {
+    console.error("Failed to initialize API:", error);
+    throw error;
+  }
 };
 
-export const getMessagesFromServer = async (channelId) => {
-  const response = await fetch(`http://localhost:3001/api/messages/channels/${channelId}/messages`, {
-      method: 'GET',
-      headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-          'Content-Type': 'application/json',
-      }
-  });
+const updateApiLinks = (links) => {
+  apiLinks = { ...apiLinks, ...links };
+};
 
+const updateSchemas = (schemas) => {
+  apiSchemas = { ...apiSchemas, ...schemas };
+};
+
+const getLink = (rel, params = {}) => {
+  let link = apiLinks[rel];
+  if (!link) {
+    throw new Error(`Link '${rel}' not found`);
+  }
+  // Replace any parameters in the link
+  Object.keys(params).forEach((key) => {
+    link = link.replace(`{${key}}`, params[key]);
+  });
+  return `http://localhost:3001${link}`; // Return the dynamically generated link
+};
+
+const apiCall = async (
+  method,
+  rel,
+  isProtected = false,
+  body = null,
+  params = {}
+) => {
+  let url = getLink(rel, params);
+  const authHeader = {
+    "Content-Type": "application/json",
+  };
+  const protectedHeaders = {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+    "Content-Type": "application/json",
+  };
+  const options = {
+    method,
+    headers: isProtected ? protectedHeaders : authHeader,
+  };
+  if (body) options.body = JSON.stringify(body);
+
+  const response = await fetch(url, options);
   const data = await response.json();
-  
 
-  if (response.ok && Array.isArray(data.messages)) {
-      return data.messages; // Make sure this is an array
-  } else {
-      console.error('Failed to fetch messages:', data.error || 'Unknown error');
-      return []; // Return an empty array on failure
-  }
-  
+  if (data.links) updateApiLinks(data.links);
+  if (data.schemas) updateSchemas(data.schemas);
+
+  if (!response.ok)
+    throw new Error(
+      data.error || `API call failed with status ${response.status}`
+    );
+
+  return data;
 };
 
-export const clearChatForChannel = async (channelId) => {
-  await fetch(`http://localhost:3001/api/messages/channels/${channelId}/messages`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Add your token here
-      'Content-Type': 'application/json', // Ensure that the Content-Type is JSON
-    }
-  });
-};
+// api calls using hypermediaLinks
+export const getChannelsFromServer = () =>
+  apiCall("GET", "allChannels", true, null);
+export const getMessagesFromServer = (channelId) =>
+  apiCall("GET", "channelMessages", true, null, { channelId });
+export const getArchivedMessages = (channelId) =>
+  apiCall("GET", "archivedMessages", true, null, { channelId });
+export const clearChatForChannel = (channelId) =>
+  apiCall("DELETE", "clearChannelMessages", true, null, { channelId });
+export const sendMessageToServer = (channelId, content) =>
+  apiCall("POST", "sendMessage", true, { content }, { channelId });
+export const createChannelOnServer = (channelData) =>
+  apiCall("POST", "createChannel", true, channelData);
+export const deleteChannelOnServer = (channelId) =>
+  apiCall("DELETE", "deleteChannel", true, null, { channelId });
+export const registerUser = (userData) =>
+  apiCall("POST", "registerUser", false, userData);
+export const loginUser = (credentials) =>
+  apiCall("POST", "loginUser", false, credentials);
 
-export const sendMessageToServer = async (channelId, content) => {
-  await fetch(`http://localhost:3001/api/messages/channels/${channelId}/messages`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({ content }),
-  });
-};
+// getSchema function to get schema for validtion on react componenat
+export const getSchema = (schemaName) => apiSchemas[schemaName];
 
-
-export const createChannelOnServer = async (channelName) => {
-  const response = await fetch('http://localhost:3001/api/channels/channels', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Authorization if needed
-      },
-      body: JSON.stringify({ name: channelName, description: 'abc' }), // Send 'name' and an empty 'description'
-  });
-
-  if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error creating channel:', errorData);
-      throw new Error(errorData.error);
-  }
-
-  return response.json(); // Return the response data
-};
-  
-  export const deleteChannelOnServer = async (channelId) => {
-    console.log('Sending DELETE request for channel:', channelId); // Add this to check if channelId is undefined
-    try {
-        const response = await fetch(`http://localhost:3001/api/channels/channels/${channelId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include token if required
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Error deleting channel:', errorData);
-            throw new Error(`Failed to delete channel: ${errorData.error}`);
-        }
-    } catch (error) {
-        console.error('Error occurred during delete request:', error);
-        throw error;
-    }
-};
-
-
+// external api fetchRandomJoke
 export const fetchRandomJoke = async () => {
   try {
-      const response = await fetch('https://v2.jokeapi.dev/joke/Any');
-      if (!response.ok) {
-          throw new Error('Failed to fetch joke');
-      }
-      const jokeData = await response.json();
-      return jokeData;
+    const response = await fetch("https://v2.jokeapi.dev/joke/Any");
+    if (!response.ok) {
+      throw new Error("Failed to fetch joke");
+    }
+    const jokeData = await response.json();
+    return jokeData;
   } catch (error) {
-      console.error('Error fetching joke:', error);
-      return null;
+    console.error("Error fetching joke:", error);
+    return null;
   }
 };
